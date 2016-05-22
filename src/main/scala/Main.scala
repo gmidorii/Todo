@@ -9,6 +9,7 @@ import todos.Todo
   */
 object Main{
   def main(args: Array[String]) {
+    // initialize
     case class TodoList(items: Seq[Todo]){
       def addTodo(todo: Todo):  Seq[Todo] ={
         items :+ todo
@@ -22,10 +23,10 @@ object Main{
     object Todo{
       def apply(title: String, content: String) : Todo = new Todo(title, content)
     }
+    var todoList : Seq[Todo] = Nil // ※var宣言している -> valに変更できないか要検討
 
-    var todoList : Seq[Todo] = Nil
 
-
+    // File input
     object MyJsonProtocol extends DefaultJsonProtocol{
       implicit val todoFormat = jsonFormat2(Todo.apply)
       implicit object TodoListJsonFormat extends RootJsonFormat[TodoList]{
@@ -33,7 +34,6 @@ object Main{
         def write(f: TodoList) = ???
       }
     }
-
     import MyJsonProtocol._
     import spray.json._
     val jsonStr = FileUtils.readFileToString(new File("data/data.json"), "UTF-8")
@@ -41,13 +41,15 @@ object Main{
     val initialTodoList = json.convertTo[TodoList]
 
 
+    // generate todo
     val todo3 = Todo.apply("3つめ", "ちゃんと毎日すすめること")
     todoList = initialTodoList.addTodo(todo3)
     println(todoList)
 
+
+    // write file
     val result = todoList.toJson
     val resultJson = result.prettyPrint
-
     FileUtils.writeStringToFile(new File("data/data.json"), resultJson, "UTF-8")
 
   }
