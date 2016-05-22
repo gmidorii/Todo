@@ -1,0 +1,8 @@
+
+*.class
+
+# IDEA Ignores
+*.iml
+*.ipr
+*.iws
+.idea/
